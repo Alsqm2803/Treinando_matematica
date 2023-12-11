@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Treinando Matemática</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+</head>
+<body class="escopo">
+    <header>
+        <nav class="nav-bar">
+            <div class="logo">
+                <h1>Treinando Matemática</h1>
+            </div>
+            <div class="nav-list">
+                <ul>
+                    <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                    <li class="nav-item"><a href="facil.html" class="nav-link">Fácil</a></li>
+                    <li class="nav-item"><a href="medio.html" class="nav-link active">Médio</a></li>
+                    <li class="nav-item"><a href="tabuada.html" class="nav-link">Tabuada</a></li>
+            </div>
+        </nav>
+        
+    </header>
+
+    <script src="assets/js/script.js"></script>
+
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="Digite o resultado">
+    <button class="botao" onclick="checkAnswer()">Verificar</button>
+    <div id="result"></div>
+    <button class="botao" id="tryAgain" style="display: none;" onclick="generateNewQuestion()">Nova conta</button>
+
+    <div>
+        <button class="botao" onclick="showHint()">Dica</button>
+        <button class="botao" onclick="generateNewQuestion()">Nova Conta</button>
+        <div id="hint"></div>
+    </div>
+
+    <script>
+        function generateQuestion() {
+            let num1 = Math.floor(Math.random() * 100);
+            let num2 = Math.floor(Math.random() * 100);
+            const operator = ['+', '-', '*', '/'][Math.floor(Math.random() * 4)]; 
+        
+            
+            if (operator == '/'){
+                while (num1 % num2 != 0 || num1 < num2){
+                    num2 = Math.floor(Math.random() * 100);
+                }
+            }else if(operator == '*'){
+                const min = 10;
+                const max = 100;
+
+                num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+                num2 = Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+            const question = `${num1} ${operator} ${num2}`;
+
+            return {
+                question,
+                answer: eval(question)
+            };
+        }
+
+        let currentQuestion = generateQuestion();
+
+        function checkAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value);
+            if (userAnswer === currentQuestion.answer) {
+                document.getElementById("result").textContent = "Você acertou!";
+                currentQuestion = generateQuestion();
+                document.getElementById("question").textContent = currentQuestion.question;
+                document.getElementById("answer").value = "";
+                document.getElementById("tryAgain").style.display = "none";
+                document.getElementById("hint").textContent = "";
+            } else {
+                document.getElementById("result").style.fontSize = "16px";
+                document.getElementById("result").textContent = "Resposta errada. Você pode tentar novamente ou gerar uma nova conta";
+            }
+        }
+
+        function generateNewQuestion() {
+            currentQuestion = generateQuestion();
+            document.getElementById("question").textContent = currentQuestion.question;
+            document.getElementById("answer").value = "";
+            document.getElementById("result").textContent = "";
+            document.getElementById("tryAgain").style.display = "none";
+            document.getElementById("hint").textContent = ""; 
+        }
+
+        
+        function showHint() {
+            const num1 = parseInt(currentQuestion.question.split(' ')[0]);
+            const num2 = parseInt(currentQuestion.question.split(' ')[2]);
+            const operator = currentQuestion.question.split(' ')[1];
+            let hint = '';
+            let chute  = 1;
+
+            if (operator === '+') {
+                hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                        Primeiramente, monte a conta, de modo que um número fique bem posicionado no outro, dessa forma:<br><br>
+                        &nbsp&nbsp; &nbsp&nbsp;${num1}<br>
+                        + &nbsp;&nbsp;${num2}<br>
+                        ____________ <br><br>
+
+                        Agora vamos somar o último dígito de cada um dos valores: <br><br>
+                        ${num1 % 10} + ${num2 % 10} = ${num1 % 10 + num2 % 10}<br><br>
+
+                        Feito isso, adicionaremos o último dígito dessa soma no nosso resultado, e o outro dígito será acrescido na próxima coluna, dessa forma:<br><br>
+                        
+                        &nbsp&nbsp;&nbsp;<sup>${Math.floor((num1 % 10 + num2 % 10)/10)}</sup>${num1}<br>
+                        + &nbsp;${num2}<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${(num1 % 10 + num2 % 10)%10} <br><br>
+                        Agora vamos somar a outra coluna: <br><br>
+                        ${Math.floor(num1 / 10)} + ${Math.floor(num2 / 10)} + ${Math.floor((num1 % 10 + num2 % 10)/10)} = ${(Math.floor(num1 / 10)) + (Math.floor(num2 / 10)) + (Math.floor((num1 % 10 + num2 % 10)/10))} <br><br>
+                        Adicionando o resultado dessa soma teremos o resultado da operação inteira. <br><br>
+                        &nbsp&nbsp;&nbsp;${num1}<br>
+                        + &nbsp;${num2}<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;${(Math.floor(num1 / 10)) + (Math.floor(num2 / 10)) + (Math.floor((num1 % 10 + num2 % 10)/10))}${(num1 % 10 + num2 % 10)%10} <br><br>
+                        Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                        `;
+            }  else if (operator === '-') {
+                if(num1 > num2){
+                    if (num1 % 10 >= num2 % 10){
+                        hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                                Primeiramente, monte a conta, de modo que um número fique bem posicionado no outro, dessa forma:<br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${num1}<br>
+                                - &nbsp;&nbsp;${num2}<br>
+                                ____________ <br><br>
+
+                                Agora vamos subtrair o último dígito do segundo número do último dígito do primeiro número: <br><br>
+                                ${num1 % 10} - ${num2 % 10} = ${num1 % 10 - num2 % 10}<br><br>
+        
+                                &nbsp&nbsp;&nbsp;${num1}<br>
+                                - &nbsp;${num2}<br>
+                                ____________ <br>
+                                &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${(num1 % 10 - num2 % 10)%10} <br><br>
+                                Feito isso, faremos a subtração da outra coluna:<br><br>
+                                ${Math.floor(num1 / 10)} - ${Math.floor(num2 / 10)}  = ${(Math.floor(num1 / 10)) - (Math.floor(num2 / 10))} <br><br>
+                                Adicionando o resultado dessa subtração teremos o resultado da operação inteira. <br><br>
+                                &nbsp&nbsp;&nbsp;${num1}<br>
+                                - &nbsp;${num2}<br>
+                                ____________ <br>
+                                &nbsp;&nbsp;&nbsp; ${(Math.floor(num1 / 10)) - (Math.floor(num2 / 10))}${(num1 % 10 - num2 % 10)%10}<br><br>
+                                Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                                `;
+                    }else{
+                        hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                                Primeiramente, monte a conta, de modo que um número fique bem posicionado no outro, dessa forma:<br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${num1}<br>
+                                - &nbsp;&nbsp;${num2}<br>
+                                ____________ <br><br>
+
+                                Agora precisamos notar que o último dígito do primeiro número é menor que o último dígito do segundo número, dessa forma, precisaremos pegar 1 unidade emprestada do dígito ao lado: <br><br>
+                                A nossa nova conta ficará assim:<br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${Math.floor(num1/10) - 1} <sup>1</sup>${num1%10}<br>
+                                - &nbsp;&nbsp;${num2}<br>
+                                ____________ <br><br>
+
+                                Fazendo a subtração, teremos: <br><br>
+                                ${(num1%10)+10} - ${num2%10} = ${((num1%10)+10) - (num2%10)} <br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${Math.floor(num1/10) - 1} <sup>1</sup>${num1%10}<br>
+                                - &nbsp;&nbsp;${num2}<br>
+                                ____________ <br>
+                                &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${((num1%10)+10) - (num2%10)} <br><br>
+                                Feito isso, faremos a subtração da outra coluna:<br><br>
+                                ${Math.floor(num1/10) - 1} - ${Math.floor(num2 / 10)}  = ${(Math.floor(num1/10) - 1) - (Math.floor(num2 / 10))} <br><br>
+                                Adicionando o resultado dessa subtração teremos o resultado da operação inteira. <br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${Math.floor(num1/10) - 1} <sup>1</sup>${num1%10}<br>
+                                - &nbsp;&nbsp;${num2}<br>
+                                ____________ <br>
+                                &nbsp;&nbsp;&nbsp; ${(Math.floor(num1/10) - 1) - (Math.floor(num2 / 10))} ${((num1%10)+10) - (num2%10)}<br><br>
+                                Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                                `;
+
+                    }
+                }else {
+                    if (num1 % 10 <= num2 % 10){
+                        hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                                Primeiramente, monte a conta, de modo que um número fique bem posicionado no outro, dessa forma:<br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${num1}<br>
+                                - &nbsp;&nbsp;${num2}<br>
+                                ____________ <br><br>
+
+                                Agora precisamos notar que o nosso primeiro número ${num1} é menor que o nosso segundo número ${num2}, ou seja, nós teremos um resultado negativo: <br><br>
+                                Com isso, teremos que mudar a posição dos nossos números para facilitar a nossa conta: <br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${num2}<br>
+                                - &nbsp;&nbsp;${num1}<br>
+                                ____________ <br><br>
+                                - &nbsp;&nbsp;<br><br>
+                                Nós basicamente trocamos a posição dos 2 números e adicionamos o sinal de negativo ( - ) no nosso resultado. Para ilustrar melhor essa situação pense o seguinte: <br>
+                                Você foi fazer compras no mercado e o valor total deu ${num2}, no entanto, quando foi pagar você só tinha ${num1}, ou seja, você vai ficar devendo, por isso, o sinal de menos. <br>
+                                Agora basta fazermos a subtração convencional: <br>
+                                ${num2 % 10} - ${num1 % 10} = ${num2 % 10 - num1 % 10}<br><br>
+                                Feito isso, adicionaremos esse valor na nossa resposta, dessa forma:<br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${num2}<br>
+                                - &nbsp;&nbsp;${num1}<br>
+                                ____________ <br><br>
+                                -   &nbsp; &nbsp;${num2 % 10 - num1 % 10}<br><br>
+                                Agora vamos subtrair a outra coluna: <br><br>
+                                ${Math.floor(num2 / 10)} - ${Math.floor(num1 / 10)} = ${(Math.floor(num2 / 10)) - (Math.floor(num1 / 10))} <br><br>
+                                Adicionando o resultado dessa subtração teremos o resultado da operação inteira. <br><br>
+                                &nbsp&nbsp;&nbsp;${num1}<br>
+                                - &nbsp;${num2}<br>
+                                ____________ <br>
+                                &nbsp; &nbsp;- ${(Math.floor(num2 / 10)) - (Math.floor(num1 / 10))}${num2 % 10 - num1 % 10} <br><br>
+                                Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                                `;
+                    }else {
+                        hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                                Primeiramente, monte a conta, de modo que um número fique bem posicionado no outro, dessa forma:<br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${num1}<br>
+                                - &nbsp;&nbsp;${num2}<br>
+                                ____________ <br><br>
+
+                                Agora precisamos notar que o nosso primeiro número ${num1} é menor que o nosso segundo número ${num2}, ou seja, nós teremos um resultado negativo: <br><br>
+                                Com isso, teremos que mudar a posição dos nossos números para facilitar a nossa conta: <br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${num2}<br>
+                                - &nbsp;&nbsp;${num1}<br>
+                                ____________ <br><br>
+                                - &nbsp;&nbsp;<br><br>
+                                Nós basicamente trocamos a posição dos 2 números e adicionamos o sinal de negativo ( - ) no nosso resultado. Para ilustrar melhor essa situação pense o seguinte: <br>
+                                Você foi fazer compras no mercado e o valor total deu ${num2}, no entanto, quando foi pagar você só tinha ${num1}, ou seja, você vai ficar devendo, por isso, o sinal de menos. <br><br>
+                                Agora precisamos notar que o último dígito do primeiro número é menor que o último dígito do segundo número, dessa forma, precisaremos pegar 1 unidade emprestada do dígito ao lado: <br><br>
+                                A nossa nova conta ficará assim:<br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${Math.floor(num2/10) - 1} <sup>1</sup>${num2%10}<br>
+                                - &nbsp;&nbsp;${num1}<br>
+                                ____________ <br><br>
+                                - &nbsp;&nbsp;<br><br>
+                                Fazendo a subtração, teremos: <br><br>
+                                ${(num2%10)+10} - ${num1%10} = ${((num2%10)+10) - (num1%10)} <br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${Math.floor(num2/10) - 1} <sup>1</sup>${num2%10}<br>
+                                - &nbsp;&nbsp;${num1}<br>
+                                ____________ <br>
+                                &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${((num2%10)+10) - (num1%10)} <br><br>
+                                Feito isso, faremos a subtração da outra coluna:<br><br>
+                                ${Math.floor(num2/10) - 1} - ${Math.floor(num1 / 10)}  = ${(Math.floor(num2/10) - 1) - (Math.floor(num1 / 10))} <br><br>
+                                Adicionando o resultado dessa subtração teremos o resultado da operação inteira. <br><br>
+                                &nbsp&nbsp; &nbsp&nbsp;${Math.floor(num2/10) - 1} <sup>1</sup>${num2%10}<br>
+                                - &nbsp;&nbsp;${num1}<br>
+                                ____________ <br>
+                                &nbsp;&nbsp; &nbsp; - ${(Math.floor(num2/10) - 1) - (Math.floor(num1 / 10))}${((num2%10)+10) - (num1%10)} <br><br>
+                                Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                                `;
+                    }
+                }
+            } else if (operator === '*') {
+                hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                        Primeiramente, monte a conta, de modo que um número fique bem posicionado no outro, dessa forma:<br><br>
+                        &nbsp&nbsp; &nbsp&nbsp;${num1}<br>
+                        x &nbsp;&nbsp;${num2}<br>
+                        ____________ <br><br>
+                        Agora você precisa saber tabuada, caso ainda tenha dúvidas pode treinar na aba "Tabuada": <br><br>
+                        Primeiro, vamos multiplicar o último dígito dos números:<br><br>
+                        ${num1%10} x ${num2%10} = ${(num1%10) * (num2%10)}<br>
+                        Feito isso, adicionaremos o último dígito dessa multiplicação no nosso resultado, e o outro dígito será acrescido na próxima coluna, dessa forma:<br><br>
+                        
+                        &nbsp&nbsp;&nbsp;<sup>${Math.floor((num1%10) * (num2%10)/10)}</sup>${num1}<br>
+                        x &nbsp;${num2}<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${(num1 % 10 * num2 % 10)%10} <br><br>
+                        Agora vamos multiplicar a outra coluna e somar com o que sobrou da operação anterior: <br><br>
+                        ${Math.floor(num1 / 10)} * ${Math.floor(num2 % 10)} + ${Math.floor((num1%10) * (num2%10)/10)} = ${(Math.floor(num1 / 10) * (num2 % 10)) + (Math.floor((num1%10) * (num2%10)/10))} <br><br>
+                        Adicionando o resultado dessa multiplicação, teremos: <br><br>
+
+                        &nbsp&nbsp;&nbsp;${num1}<br>
+                        x &nbsp;${num2}<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${(Math.floor(num1 / 10) * (num2 % 10)) + (Math.floor((num1%10) * (num2%10)/10))}${(num1 % 10 * num2 % 10)%10} <br><br>
+
+                        Agora nós teremos que fazer as multiplicações usando o próximo número: <br>
+                        Arrumando nossa conta, teremos que colocar o sinal (+) embaixo da casa da unidade, assim:<br><br>
+
+                        &nbsp&nbsp;&nbsp;${num1}<br>
+                        x &nbsp;${num2}<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${(Math.floor(num1 / 10) * (num2 % 10)) + (Math.floor((num1%10) * (num2%10)/10))}${(num1 % 10 * num2 % 10)%10} <br>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+<br><br>
+
+                        Fazendo a próxima multiplicação, teremos: <br><br>
+
+                        ${Math.floor(num2/10)} x ${num1%10} = ${Math.floor(num2/10) * (num1%10)} <br><br>
+                        Colocaremos um dígito ao lado do nosso sinal de mais e outro a gente vai colocar na parte de cima, dessa forma: <br><br>
+                        
+                        &nbsp&nbsp;&nbsp;<sup>${Math.floor((Math.floor(num2/10) * (num1%10))/10)}</sup>${num1}<br>
+                        x &nbsp;${num2}<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${(Math.floor(num1/10) * (num2%10)) + (Math.floor((num1%10) * (num2%10)/10))}${(num1%10 * num2%10)%10}<br>
+                        &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;${(Math.floor(num2/10) * (num1%10))%10}+<br><br>
+
+                        Agora vamos multiplicar a outra coluna e somar com o restante que sobrou da operação anterior: <br><br>
+
+                        ${Math.floor(num2/10)} x ${Math.floor(num1/10)} + ${Math.floor((Math.floor(num2/10) * (num1%10))/10)} = ${(Math.floor(num2/10) * Math.floor(num1/10)) + (Math.floor((Math.floor(num2/10) * (num1%10))/10))} <br><br>
+                        Adicionando o resultado dessa operação na nossa conta, teremos:<br><br>
+                        &nbsp&nbsp;&nbsp;${num1}<br>
+                        x &nbsp;${num2}<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${(Math.floor(num1/10) * (num2%10)) + (Math.floor((num1%10) * (num2%10)/10))}${(num1 % 10 * num2 % 10)%10}<br>
+                        &nbsp;&nbsp;&nbsp;${(Math.floor(num2/10) * Math.floor(num1/10)) + (Math.floor((Math.floor(num2/10) * (num1%10))/10))}${(Math.floor(num2/10) * (num1%10))%10}+<br><br>
+
+                        Agora vamos somar as 2 partes e teremos nosso resultado: <br><br>
+
+                        &nbsp&nbsp;&nbsp;${num1}<br>
+                        x &nbsp;${num2}<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${(Math.floor(num1/10) * (num2%10)) + (Math.floor((num1%10) * (num2%10)/10))}${(num1 % 10 * num2 % 10)%10}<br>
+                        &nbsp;&nbsp;&nbsp;${(Math.floor(num2/10) * Math.floor(num1/10)) + (Math.floor((Math.floor(num2/10) * (num1%10))/10))}${(Math.floor(num2/10) * (num1%10))%10}+<br>
+                        ____________ <br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${num1 * num2}<br><br>
+                        Caso tenha dúvidas com a soma, treine contas de adição na parte "FÁCIL" ou "MÉDIO". <br><br>
+                        Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br>
+                        `;
+            } else if (operator === '/') {
+                resultado = num1/num2;
+                hint = `<br><br>Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                        Primeiramente, monte a conta, de modo que um número fique bem posicionado no outro, dessa forma:<br><br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${num1} |&nbsp;&nbsp;${num2}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br><br>
+                        Basicamente, para realizarmos a divisão pensamos em quantas vezes o ${num2} que está dentro da chave (divisor), cabe no ${num1} (dividendo). Como estamos trabalhando com múltiplos nossa divisão será inteira e sem restos, mais pra frente veremos outros tipos de multiplicação.<br><br>
+                        Com isso, precisaremos usar um pouco de tabuada nessa parte para sabermos exatamente quantas vezes um número cabe no outro e, essa quantidade de vezes será nosso resultado.<br><br>`;
+
+                if(num1 == num2){
+                    hint += `Como nós temos o primeiro número igual ao segundo, só tem uma resposta possível, pense o seguinte, você está numa festa de aniversário com ${num1} lembrancinhas (saco de doces) e ${num2} convidados, então quantos saquinhos de lembrancinha será entregue para cada convidado?<br><br>
+                            Se nós temos a mesma quantidade de lembrancinhas e de convidados, então só poderemos entregar 1 lembrancinha para cada convidado. <br><br>
+                            &nbsp;&nbsp; &nbsp;&nbsp;${num1} |&nbsp;&nbsp;${num2}<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1<br><br>
+                            Dessa forma, nossa resposta será 1, esse é o valor do quociente. <br><br>
+                    `
+                }else if(num2 == 1){
+                    hint += `Como nós temos o segundo número (divisor) igual a 1, só tem uma resposta possível, pense o seguinte, você está na sua festa de aniversário, então todos os presentes que você receber será apenas seu.<br><br>
+                            Com isso, imagine que você recebeu ${num1} presentes, então todos esses presentes serão seu, ou seja você vai dividí-los com uma pessoa, que será você.<br><br>
+                            &nbsp;&nbsp; &nbsp;&nbsp;${num1} |&nbsp;&nbsp;${num2}<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1<br><br>
+                            Dessa forma, nossa resposta será ${num1}, esse é o valor do quociente. <br><br>
+                    `
+
+                }else{
+                    hint += `Se você souber tabuada essa parte será fácil para você, mas caso ainda não esteja craque poderemos fazer chutes de valores, até chegar no resultado correto.<br><br>
+                    `
+                    resultado_divisao = num1/num2;
+                    if(resultado_divisao < 10){
+                        hint += `Vamos começar chutando ${chute}, assim, precisamos ver se ${chute} x ${num2} resulta em ${num1}.<br><br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${num1} |&nbsp;&nbsp;${num2}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${chute}<br><br>
+                        Realizando a multiplicação, temos:<br><br>
+                        ${chute} x ${num2} = ${chute * num2}<br><br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${num1} |&nbsp;&nbsp;${num2}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${chute}<br><br>
+                        Se o resultado dessa multiplicação for igual ao valor do dividendo, então temos o nosso resultado, caso contrário, basta aumentarmos o nosso chute.<br><br>` 
+                        chute += 1;
+                        while(resultado_divisao > 1){
+                            hint += `Chute: ${chute}, assim precisamos ver se o nosso chute, ${chute} multiplicado com ${num2} resulta em nosso dividendo ${num1}. <br><br>
+                            Fazendo a multiplicação, temos: <br><br>
+                            ${chute} x ${num2} = ${chute * num2}<br><br>
+                            &nbsp;&nbsp; &nbsp;&nbsp;${num1} |&nbsp;&nbsp;${num2}<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${chute}<br><br>
+                           `
+                            resultado_divisao -= 1;
+                            chute += 1;
+                        }
+                        hint += `Dessa forma, o resultado dessa multiplicação será ${chute -1}. <br><br> `
+                    }else{
+
+                        hint += `Vamos por partes, primeiramente vamos ver quantas vezes o ${num2} cabe no primeiro dígito de ${num1}.<br><br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;${num1} |&nbsp;&nbsp;${num2}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${Math.floor(Math.floor(num1/10)/num2)}<br><br>
+                        Vamos verificar se sobrou algum valor entre ${Math.floor(Math.floor(num1/10)/num2)} e o primeiro dígito de ${num1} e descer o outro dígito para continuarmos nossa operação. <br><br>
+                        ${num1} |&nbsp;&nbsp;&nbsp;${num2}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;-${Math.floor(Math.floor(num1/10)/num2)*num2}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${Math.floor(Math.floor(num1/10)/num2)}<br>
+                        ${Math.floor(num1/10) - Math.floor(Math.floor(num1/10)/num2)*num2}${num1%10}&nbsp;&nbsp;&nbsp;&nbsp;<br><br>
+                        Agora temos que ver o número que multiplicado por ${num2} resulta em ${(Math.floor(num1/10) - Math.floor(Math.floor(num1/10)/num2)*num2)*10 + num1%10}<br><br>
+                        ${((Math.floor(num1/10) - Math.floor(Math.floor(num1/10)/num2)*num2)*10 + num1%10)/num2} x ${num2} = ${Math.floor(num1/10) - Math.floor(Math.floor(num1/10)/num2)*num2}${num1%10} <br><br>
+
+                        ${num1} |&nbsp;&nbsp;&nbsp;${num2}<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;-${Math.floor(Math.floor(num1/10)/num2)*num2}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;----&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${Math.floor(Math.floor(num1/10)/num2)}${((Math.floor(num1/10) - Math.floor(Math.floor(num1/10)/num2)*num2)*10 + num1%10)/num2}<br>
+                        ${(Math.floor(num1/10) - Math.floor(Math.floor(num1/10)/num2)*num2)*10 + num1%10}&nbsp;&nbsp;&nbsp;&nbsp;<br><br>
+                        Com isso, o resultado será ${Math.floor(Math.floor(num1/10)/num2)}${((Math.floor(num1/10) - Math.floor(Math.floor(num1/10)/num2)*num2)*10 + num1%10)/num2}. <br><br>
+                        ` 
+                        
+                    }
+                }
+                hint += `Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>`
+            }
+
+            document.getElementById("hint").innerHTML = hint;
+        }
+
+        document.getElementById("question").textContent = currentQuestion.question;
+    </script>
+</body>
+</html>

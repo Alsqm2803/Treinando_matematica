@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabuada</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+</head>
+<body class="escopo">
+    <header>
+        <nav class="nav-bar">
+            <div class="logo">
+                <h1>Treinando Matemática</h1>
+            </div>
+            <div class="nav-list">
+                <ul>
+                    <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                    <li class="nav-item"><a href="facil.html" class="nav-link">Fácil</a></li>
+                    <li class="nav-item"><a href="medio.html" class="nav-link">Médio</a></li>
+                    <li class="nav-item"><a href="tabuada.html" class="nav-link active">Tabuada</a></li>
+            </div>
+        </nav>
+        
+    </header>
+
+    <div id="options">
+        <label for="number">Escolha um número para a tabuada entre 1 e 100:</label>
+        <input class="botao" type="number" id="number" min="1" max="100">
+        <button class="botao" onclick="generateTable()">Gerar Tabuada</button>
+    </div>
+
+    <div id="table-container"></div>
+
+    <button class="botao" onclick="checkAnswers()">Corrigir</button>
+
+    <div id="result"></div>
+
+    <script>
+        function generateTable() {
+            const number = document.getElementById("number").value;
+
+            if (number < 1 || number > 100) {
+                alert("Por favor, escolha um número entre 1 e 100.");
+                return;
+            }
+
+            let tableHtml = '<div>';
+            for (let i = 1; i <= Math.max(10, number); i++) {
+                tableHtml += `<div>
+                                <span>${number} x ${i} =</span>
+                                <input type="number" class="operation-input botao" id="answer-${i}">
+                            </div>`;
+            }
+            tableHtml += '</div>';
+
+            document.getElementById("table-container").innerHTML = tableHtml;
+        }
+
+        function checkAnswers() {
+            const number = document.getElementById("number").value;
+            const resultsContainer = document.getElementById("result");
+            let correctCount = 0;
+            
+            for (let i = 1; i <= Math.max(10, number); i++) {
+                const userAnswer = parseInt(document.getElementById(`answer-${i}`).value);
+                const correctAnswer = number * i;
+                if (userAnswer === correctAnswer) {
+                    document.getElementById(`answer-${i}`).classList.remove("wrong");
+                    document.getElementById(`answer-${i}`).classList.add("correct");
+                    correctCount++;
+                } else {
+                    document.getElementById(`answer-${i}`).classList.remove("wrong");
+                    document.getElementById(`answer-${i}`).classList.add("wrong");
+                }
+                
+            }
+            resultsContainer.innerHTML = `Você acertou ${correctCount} de ${Math.max(number, 10)} operações.`;
+        }
+    </script>
+</body>
+
+</html>

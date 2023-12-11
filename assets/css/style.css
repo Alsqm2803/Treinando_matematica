@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora&family=Permanent+Marker&family=Playfair+Display&display=swap');
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Lora', serif;
+    text-align: center;
+    box-sizing: border-box;
+    background-color: #000000;
+    color: #fff;
+}
+
+#question {
+    font-size: 60px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25vh; 
+    color:#fff;
+}
+#result {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    justify-content: center;
+    color: #fff;
+}
+#answer {
+    font-size: 12px;
+    padding: 6px 16px;
+    border: solid 1px rgb(255, 255, 255);
+    border-radius: 20px;
+    color: rgb(255, 255, 255);
+    background-color:  rgb(0, 0, 0);
+    transition: background-color 0.5s ease, color 0.5s ease, transform 0.5s ease;
+}
+p {
+    text-align: center;
+    font-size: 18px;
+    margin: 20px;
+    margin-top: 20px;
+    color: #fff;
+}
+header {
+    background-color:  #fff;
+    color: #000000;
+    text-align: center;
+    padding: 0.2rem;
+}
+
+.nav-bar ul{
+    list-style: none;
+    padding: 1rem;
+    color: #fff;
+}
+
+.nav-bar li {
+    display: inline;
+    margin-right: 10px;
+    color: #fff;
+}
+.nav-link {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+.nav-link.active {
+    padding: 6px 16px;
+    border: solid 1px rgb(213, 213, 213);
+    border-radius: 20px;
+    background-color: #ffffff; /* Cor de fundo quando ativo */
+    color: rgb(0, 0, 0); /* Cor do texto quando ativo */
+}
+h3 {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+    color: #fff;
+}
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 2rem;
+    color: #fff;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo h1 {
+    color: #fff;
+}
+
+.nav-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.nav-list ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    color: #fff;
+}
+
+.nav-item {
+    margin: 0 15px;
+    color: #fff;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-size: 1.15rem;
+    color: #fff;
+    font-weight: 400;
+}
+
+.botao{
+    font-size: 12px;
+    padding: 6px 16px;
+    border: solid 1px rgb(213, 213, 213);
+    border-radius: 20px;
+    color: rgb(0, 0, 0);
+    background-color:  rgb(213, 213, 213);
+    transition: background-color 0.5s ease, color 0.5s ease, transform 0.5s ease;
+}
+.botao:hover{
+    background-color:rgb(213, 213, 213);
+    color: rgb(0, 0, 0); 
+}
+#options {
+    margin-top: 30px;
+}
+#table-container {
+    margin-top: 20px;
+}
+.operation-input {
+    width: 40px;
+    text-align: center;
+    margin: 0 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    color: #fff;
+}
+.correct {
+    border: 2px solid #4CAF50;
+}
+.wrong {
+    border: 2px solid #FF0000;
+}
+.square {
+    display: inline-block;
+    height: 100vh;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #76b9e6;
+    margin: 2px;
+    vertical-align: middle;
+}
+.square2 {
+    display: inline-block;
+    height: 100vh;
+    margin: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #6bd66d;
+    margin: 2px;
+    vertical-align: middle;
+}
+.block-container {
+    text-align: right;
+   
+}
+
+.operation-input{
+    color:#000000;
+}

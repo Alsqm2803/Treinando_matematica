@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aprender brincando</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="nav-bar">
+            <div class="logo">
+                <h1>Treinando Matemática</h1>
+            </div>
+            <div class="nav-list">
+                <ul>
+                    <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                    <li class="nav-item"><a href="facil.html" class="nav-link active">Fácil</a></li>
+                    <li class="nav-item"><a href="medio.html" class="nav-link">Médio</a></li>
+                    <li class="nav-item"><a href="tabuada.html" class="nav-link">Tabuada</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="Digite o resultado">
+    <button class="botao" onclick="checkAnswer()">Verificar</button>
+    <div id="result"></div>
+
+    <button id="tryAgain" class="botao" style="display: none;" onclick="generateNewQuestion()">Nova conta</button>
+
+    <div>
+        <button class="botao" onclick="showHint()">Dica</button>
+        <button class="botao" onclick="generateNewQuestion()">Nova Conta</button>
+        <div id="hint"></div>
+    </div>
+
+    <script>
+        function generateQuestion() {
+            const num1 = Math.floor(Math.random() * 10);
+            let num2 = Math.floor(Math.random() * 10);
+            const operator = ['+', '-', '*', '/'][Math.floor(Math.random() * 4)]; 
+
+            if (operator == '/'){
+                while (num1 % num2 != 0){
+                    num2 = Math.floor(Math.random() * 100);
+                }
+            }
+
+            const question = `${num1} ${operator} ${num2}`;
+            return {
+                question,
+                answer: eval(question)
+            };
+        }
+
+        let currentQuestion = generateQuestion();
+
+        function checkAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value);
+            if (userAnswer === currentQuestion.answer) {
+                document.getElementById("result").textContent = "Você acertou!";
+                currentQuestion = generateQuestion();
+                document.getElementById("question").textContent = currentQuestion.question;
+                document.getElementById("answer").value = "";
+                document.getElementById("tryAgain").style.display = "none";
+                document.getElementById("hint").textContent = "";
+            } else {
+                document.getElementById("result").style.fontSize = "16px";
+                document.getElementById("result").textContent = "Resposta errada. Você pode tentar novamente ou gerar uma nova conta";
+            }
+        }
+
+        function generateNewQuestion() {
+            currentQuestion = generateQuestion();
+            document.getElementById("question").textContent = currentQuestion.question;
+            document.getElementById("answer").value = "";
+            document.getElementById("result").textContent = "";
+            document.getElementById("tryAgain").style.display = "none";
+            document.getElementById("hint").textContent = ""; // Adicionando esta linha para limpar o texto de dica
+        }
+
+        function showHint() {
+            const num1 = currentQuestion.question.split(' ')[0];
+            const num2 = currentQuestion.question.split(' ')[2];
+            const operator = currentQuestion.question.split(' ')[1];
+            let hint = '';
+
+            function generateNumberVisual(number) {
+                let visual = '';
+                for (let i = 0; i < number; i++) {
+                    visual += '<div class="square"></div>';
+                }
+                return visual;
+            }
+            function generateNumberVisual2(number) {
+                let visual = '';
+                for (let i = 0; i < number; i++) {
+                    visual += '<div class="square2"></div>';
+                }
+                return visual;
+            }
+
+            if (operator === '+') {
+                hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                Primeiramente você precisará montar a conta, vamos utlizar quadradinhos para representar os números: <br><br>
+                        ${generateNumberVisual(num1)}<br>
+                    + ${generateNumberVisual(num2)}<br>
+                    ____________ <br><br>
+                Agora você pode juntar todos os quadradinhos: <br><br>
+                ${generateNumberVisual(num1)}${generateNumberVisual(num2)}<br><br>
+                E contar um a um e esse será o resultado da soma. <br>
+                Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                `;
+        
+            } else if (operator === '-') {
+                if (num1 > num2){
+                    let dif = Math.abs(num2 - num1);
+                    hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                    Primeiramente você precisará montar a conta, vamos utlizar quadradinhos para representar os números: <br><br>
+                            ${generateNumberVisual(num1)}<br>
+                        - ${generateNumberVisual(num2)}<br>
+                        ____________ <br><br>
+                    Agora você precisa separar a maior parte e retirar dela os pedacinhos da menor parte: <br><br>
+                    ${generateNumberVisual(num1)}<br><br>
+                    E contar um a um dos quadradinhos que sobraram (cor azul) e esse será o resultado da nossa subtração. <br>
+                    ${generateNumberVisual(dif)} ${generateNumberVisual2(num2)}<br><br>
+                    Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                    `;
+                }else if (num1 == num2) {
+                    let dif = Math.abs(num2 - num1);
+                    hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                    Primeiramente você precisará montar a conta, vamos utlizar quadradinhos para representar os números: <br><br>
+                            ${generateNumberVisual(num1)}<br>
+                        - ${generateNumberVisual(num2)}<br>
+                        ____________ <br><br>
+                    Agora nós precisamos entender o motivo por trás do nosso resultado ser nulo.<br> Pense o seguinte, você foi ao mercado e o total de sua compra foi R$ ${num2} ou se prefirir R$ ${generateNumberVisual(num2)}, no momento de pagar você tinha R$ ${num1} ou se você preferir R$ ${generateNumberVisual(num1)}.<br>
+                    Fazendo as contas, o valor que você pagou é exatamente igual ao que você gastou no mercado, então você ficará sem troco mas támbem não estará devendo, por isso o resultado será zero.<br><br>
+                    <br><br>
+                    Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                    `;
+                }else {
+                    let dif = Math.abs(num2 - num1);
+                    hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                    Primeiramente você precisará montar a conta, vamos utlizar quadradinhos para representar os números: <br><br>
+                            ${generateNumberVisual(num1)}<br>
+                        - ${generateNumberVisual(num2)}<br>
+                        ____________ <br><br>
+                    Agora nós precisamos entender o motivo por trás do nosso resultado ser negativo.<br> Pense o seguinte, você foi ao mercado e o total de sua compra foi R$ ${num2} ou se prefirir R$ ${generateNumberVisual(num2)}, no momento de pagar você tinha R$ ${num1} ou se você preferir R$ ${generateNumberVisual(num1)}.<br>
+                    Fazendo as contas, o valor que você pagou é menor do que você gastou no mercado, então você ficará devendo, por isso o resultado será negativo.<br><br>
+                    <br><br>
+                    ${generateNumberVisual2(dif)} <br>
+                    Contando os quadradinhos que sobraram e adicionando o sinal de menos na frente desse número, teremos nosso resultado. <br>
+                    Para verificar se você acertou basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>
+                    `;
+                }
+            } else if (operator === '/') {
+                let div = Math.abs(num1 / num2);
+                hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                        Primeiramente você precisará montar a conta, vamos utlizar quadradinhos para representar os números: <br><br>
+                        ${generateNumberVisual(num1)}<br>
+                        / ${generateNumberVisual(num2)}<br>
+                        ____________ <br><br>
+                        Agora, para resolver esse problema, podemos pensar na seguinte situação: você está na escola com um pacote de balinhas, com exatamente ${num1} balas (${generateNumberVisual(num1)}) e precisa dividir essas balas com ${num2} amigos (${generateNumberVisual(num2)}) para que todos recebam a mesma quantidade de balas, assim ninguém ficará triste.<br><br>
+                        Contando os quadradinhos que sobraram, teremos nosso resultado. <br>
+                        ${generateNumberVisual(div)}<br>
+                        Para verificar se você acertou, basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>`;
+            }  else {
+                let menor = Math.min(num1, num2);
+                let maior = Math.max(num1, num2);
+                let qtd = Math.abs(maior * menor);
+                if (qtd === 0) {
+                    hint = `<br><br> Quando multiplicamos qualquer número por 0, o resultado é sempre 0. Isso acontece porque estamos pegando 0 grupos do número em questão. Portanto, não há nenhum quadradinho a ser representado.<br>
+                            Para verificar se você acertou, basta inserir o número 0 no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>`;
+                } else {
+                    hint = `<br><br> Vamos realizar a operação ${num1} ${operator} ${num2} passo a passo:<br><br>
+                            Primeiramente você precisará montar a conta, vamos utlizar quadradinhos para representar os números: <br><br>
+                            ${generateNumberVisual(num1)}<br>
+                            X ${generateNumberVisual(num2)}<br>
+                            ____________ <br><br>
+                            Agora, para resolver esse problema, podemos imaginar a multiplicação com várias somas, então primeiramente nós vamos pegar o menor número dessa multiplicação, ${menor}. Essa será a quantidade de vezes que precisaremos somar o número ${maior}. <br>
+                            Analisando o outro número, teremos que somar ${maior} com ele mesmo ${menor} vezes. <br>
+                            ${generateNumberVisual(qtd)}<br>
+                            Esse resultado da soma é igual ao resultado da multiplicação, agora basta contar um a um.<br>
+                            Para verificar se você acertou, basta inserir o número no campo escrito "Digite o resultado" e clicar no botão verificar.<br><br><br><br>`;
+                }
+            }
+
+            document.getElementById("hint").innerHTML = hint;
+        }
+
+        // Inicializar a primeira pergunta
+        document.getElementById("question").textContent = currentQuestion.question;
+    </script>
+</body>
+</html>
