@@ -74,7 +74,11 @@
                 }
                 
             }
-            resultsContainer.innerHTML = `Você acertou ${correctCount} de ${Math.max(number, 10)} operações.`;
+            if (correctCount == Math.max(number, 10)){
+                resultsContainer.innerHTML =  "Parabéns, você acertou todas as operações 🎉!";
+            }
+
+            resultsContainer.innerHTML = `Você acertou ${correctCount} de ${Math.max(number, 10)} operações. Continue tentando.`;
         }
     </script>
 </body>
