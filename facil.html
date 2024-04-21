@@ -60,7 +60,7 @@
             const userAnswer = parseFloat(document.getElementById("answer").value);
             if (userAnswer === currentQuestion.answer) {
                 document.getElementById("result").textContent = "Correto! 🎉";
-                 document.getElementById("result").style.color = 'green';
+                 document.getElementById("result").style.color = 'dark green';
                 currentQuestion = generateQuestion();
                 document.getElementById("question").textContent = currentQuestion.question;
                 document.getElementById("answer").value = "";
