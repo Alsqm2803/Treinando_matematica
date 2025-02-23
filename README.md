@@ -1,6 +1,6 @@
 🧮 Treinando Matemática
 
-Treinando Matemática é uma aplicação desenvolvida para auxiliar estudantes no aprimoramento de suas habilidades matemáticas por meio de exercícios e desafios interativos.
+Treinando Matemática é uma aplicação desenvolvida para auxiliar estudantes no aprimoramento de suas habilidades matemáticas por meio de exercícios e desafios aleatórios.
 
 🚀 Tecnologias Utilizadas
 
